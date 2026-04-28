@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
+import { Router, ActivatedRouteSnapshot } from '@angular/router';
 import { AuthService, MoocUser } from './auth.service';
 import { map, catchError } from 'rxjs/operators';
 import { of } from 'rxjs';
 
 @Injectable()
-export class AdminGuard implements CanActivate {
+export class AdminGuard  {
 
   constructor(public auth: AuthService, public router: Router) {}
 

@@ -1,14 +1,14 @@
 'use strict';
 
 import { Injectable } from '@angular/core';
-import { CanActivate, Router } from '@angular/router'; // ActivatedRouteSnapshot, RouterStateSnapshot,
+import { Router } from '@angular/router'; // ActivatedRouteSnapshot, RouterStateSnapshot,
 import { AuthService, MoocUser } from './auth.service';
 
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
-export class AuthGuard implements CanActivate {
+export class AuthGuard  {
 
   constructor(private auth: AuthService, private router: Router) {}
 

@@ -1,23 +1,25 @@
 
 <div class="mat-elevation-z8">
 
-    <mat-table
-        [dataSource]="rows" 
-        matSort
-        matSortActive="videoId"
-        matSortDirection="asc"
-        matSortDisableClear>
+  <mat-table
+    [dataSource]="rows"
+    matSort
+    matSortActive="videoId"
+    matSortDirection="asc"
+    matSortDisableClear>
 
-        <!-- Header Columns -->
-        <ng-container matColumnDef="{{column}}" *ngFor="let column of columns; let i = index">
-            <mat-header-cell *matHeaderCellDef mat-sort-header>{{columnLabels[i]}}</mat-header-cell>
-            <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
-        </ng-container>
-        
-        <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
-        <mat-row *matRowDef="let row; columns: columns;"></mat-row>
-        
-    </mat-table>
+    <!-- Header Columns -->
+    @for (column of columns; track column; let i = $index) {
+      <ng-container matColumnDef="{{column}}">
+        <mat-header-cell *matHeaderCellDef mat-sort-header>{{columnLabels[i]}}</mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element[column]}} </mat-cell>
+      </ng-container>
+    }
 
-    <mat-paginator [length]="rows.length" [pageSizeOptions]="[5, 25, 50, 100]"></mat-paginator>
+    <mat-header-row *matHeaderRowDef="columns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: columns;"></mat-row>
+
+  </mat-table>
+
+  <mat-paginator [length]="rows.length" [pageSizeOptions]="[5, 25, 50, 100]"></mat-paginator>
 </div>

@@ -11,28 +11,34 @@
         <p>{{content}}</p>
 
         <!-- Topics-->
-        <ng-container *ngIf="topics?.length">
+        @if (topics?.length) {
           <h2>Topics</h2>
           <mat-chip-listbox>
-              <mat-chip-option color="secondary" selected="true" *ngFor="let topic of topics;">{{topic}}</mat-chip-option>
+            @for (topic of topics; track topic) {
+              <mat-chip-option color="secondary" selected="true">{{topic}}</mat-chip-option>
+            }
           </mat-chip-listbox>
-        </ng-container>
+        }
 
         <!-- Methods-->
-        <ng-container *ngIf="methods?.length">
+        @if (methods?.length) {
           <h2>Research Methods</h2>
           <mat-chip-listbox>
-              <mat-chip-option color="secondary" selected="true" *ngFor="let method of methods;">{{method}}</mat-chip-option>
+            @for (method of methods; track method) {
+              <mat-chip-option color="secondary" selected="true">{{method}}</mat-chip-option>
+            }
           </mat-chip-listbox>
-        </ng-container>
+        }
 
         <!-- Keywords-->
-        <ng-container *ngIf="keywords?.length">
+        @if (keywords?.length) {
           <h2>Keywords</h2>
           <mat-chip-listbox>
-              <mat-chip-option color="secondary" *ngFor="let keyword of keywords;">{{keyword}}</mat-chip-option>
+            @for (keyword of keywords; track keyword) {
+              <mat-chip-option color="secondary">{{keyword}}</mat-chip-option>
+            }
           </mat-chip-listbox>
-        </ng-container>
+        }
       </div>
     </div>
 

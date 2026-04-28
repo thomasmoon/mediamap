@@ -4,24 +4,28 @@
   <!-- Topics -->
   <mat-tab label="TOPICS">
     <ng-template matTabContent>
-        <div class="topics">
-            <mat-nav-list class="tasks-list">
-              <a mat-list-item *ngFor="let topic of topicsNew; let i = index" [routerLink]="['/', 'topic', topic.slug]" routerLinkActive="active">{{ topic.name }}</a>
-            </mat-nav-list>
-        </div>
+      <div class="topics">
+        <mat-nav-list class="tasks-list">
+          @for (topic of topicsNew; track topic; let i = $index) {
+            <a mat-list-item [routerLink]="['/', 'topic', topic.slug]" routerLinkActive="active">{{ topic.name }}</a>
+          }
+        </mat-nav-list>
+      </div>
     </ng-template>
   </mat-tab>
 
   <!-- Methods -->
   <mat-tab label="METHODS">
-      <ng-template matTabContent>
-          <div class="methods">
-              <mat-nav-list class="methods-list">
-                <a mat-list-item *ngFor="let method of methodsNew; let i = index" [routerLink]="['/', 'method', method.slug]" routerLinkActive="active">{{ method.name }}</a>
-              </mat-nav-list>
-          </div>
-      </ng-template>
-    </mat-tab>
+    <ng-template matTabContent>
+      <div class="methods">
+        <mat-nav-list class="methods-list">
+          @for (method of methodsNew; track method; let i = $index) {
+            <a mat-list-item [routerLink]="['/', 'method', method.slug]" routerLinkActive="active">{{ method.name }}</a>
+          }
+        </mat-nav-list>
+      </div>
+    </ng-template>
+  </mat-tab>
 
 </mat-tab-group>
 <!-- end tools -->

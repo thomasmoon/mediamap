@@ -2,19 +2,23 @@
   <mat-tab label="Videos">
     <ng-template matTabContent>
       <div class="locations">
-          <mat-nav-list class="locations-list">
-            <a mat-list-item [routerLink]="['/loc', i+1]" *ngFor="let loc of locations; let i = index" routerLinkActive="active" (click)="resetRouter()">{{ loc.properties.name }}</a>
-          </mat-nav-list>
+        <mat-nav-list class="locations-list">
+          @for (loc of locations; track loc; let i = $index) {
+            <a mat-list-item [routerLink]="['/loc', i+1]" routerLinkActive="active" (click)="resetRouter()">{{ loc.properties.name }}</a>
+          }
+        </mat-nav-list>
       </div>
     </ng-template>
   </mat-tab>
   <mat-tab label="Tasks">
     <ng-template matTabContent>
-        <div class="tasks">
-            <mat-nav-list class="tasks-list">
-              <a mat-list-item [routerLink]="['/loc', i+1]" *ngFor="let task of tasks; let i = index" routerLinkActive="active" (click)="resetRouter()">{{ task }}</a>
-            </mat-nav-list>
-        </div>
+      <div class="tasks">
+        <mat-nav-list class="tasks-list">
+          @for (task of tasks; track task; let i = $index) {
+            <a mat-list-item [routerLink]="['/loc', i+1]" routerLinkActive="active" (click)="resetRouter()">{{ task }}</a>
+          }
+        </mat-nav-list>
+      </div>
     </ng-template>
   </mat-tab>
 </mat-tab-group>

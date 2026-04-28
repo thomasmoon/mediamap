@@ -117,9 +117,6 @@ import { LessonComponent } from './lesson/lesson.component';
     MatTabsModule,
     MatCheckboxModule
   ],
-  entryComponents: [
-    Dialog
-  ],
   providers: [
     AuthService,
     MapService,

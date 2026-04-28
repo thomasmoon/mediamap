@@ -20,7 +20,7 @@
     "@angular/common": "^19.2.21",
     "@angular/compiler": "^19.2.21",
     "@angular/core": "^19.2.21",
-    "@angular/fire": "^18.0.1",
+    "@angular/fire": "^20.0.1",
     "@angular/forms": "^19.2.21",
     "@angular/material": "^19.2.19",
     "@angular/platform-browser": "^19.2.21",

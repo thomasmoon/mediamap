@@ -3,9 +3,10 @@ import { CommentsService, Comment} from 'src/app/services/comments.service';
 import { MatPaginator } from '@angular/material/paginator';
 import { tap } from 'rxjs/operators';
 @Component({
-  selector: 'app-comments-admin',
-  templateUrl: './comments.component.html',
-  styleUrls: ['./comments.component.scss']
+    selector: 'app-comments-admin',
+    templateUrl: './comments.component.html',
+    styleUrls: ['./comments.component.scss'],
+    standalone: false
 })
 export class CommentsAdminComponent implements OnInit {
 

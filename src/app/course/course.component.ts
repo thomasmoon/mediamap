@@ -13,9 +13,10 @@ import { MatSidenav } from '@angular/material/sidenav';
 import { CourseSidenavService } from '../services/coursesidenav.service';
 
 @Component({
-  selector: 'app-course',
-  templateUrl: './course.component.html',
-  styleUrls: ['./course.component.scss']
+    selector: 'app-course',
+    templateUrl: './course.component.html',
+    styleUrls: ['./course.component.scss'],
+    standalone: false
 })
 export class CourseComponent implements OnInit {
 

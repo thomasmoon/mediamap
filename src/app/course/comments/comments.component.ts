@@ -12,9 +12,10 @@ import { Dialog } from 'src/app/dialog/dialog.component';
 
 
 @Component({
-  selector: 'app-comments',
-  templateUrl: './comments.component.html',
-  styleUrls: ['./comments.component.scss']
+    selector: 'app-comments',
+    templateUrl: './comments.component.html',
+    styleUrls: ['./comments.component.scss'],
+    standalone: false
 })
 export class CommentsComponent implements OnInit {
 

@@ -2,9 +2,10 @@ import { Component, Input, Inject, forwardRef, OnInit } from '@angular/core';
 import * as $ from 'jquery';
 
 @Component({
-  selector: 'app-tools',
-  templateUrl: './tools.component.html',
-  styleUrls: ['./tools.component.scss']
+    selector: 'app-tools',
+    templateUrl: './tools.component.html',
+    styleUrls: ['./tools.component.scss'],
+    standalone: false
 })
 export class ToolsComponent implements OnInit {
 

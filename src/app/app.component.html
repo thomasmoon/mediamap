@@ -50,10 +50,10 @@
   
           <div class="name">
             {{ auth.user?.displayName || auth.user?.anonName || "Welcome, guest." }}
-            <mat-chip-list *ngIf="auth.user?.roles">
-              <mat-chip color="primary" selected="true" *ngIf="auth.user.roles.indexOf('admin') > -1">Admin</mat-chip>
-              <mat-chip color="secondary" selected="true" *ngIf="auth.user.roles.indexOf('expert') > -1">Expert</mat-chip>
-            </mat-chip-list>
+            <mat-chip-listbox *ngIf="auth.user?.roles">
+              <mat-chip-option color="primary" selected="true" *ngIf="auth.user.roles.indexOf('admin') > -1">Admin</mat-chip-option>
+              <mat-chip-option color="secondary" selected="true" *ngIf="auth.user.roles.indexOf('expert') > -1">Expert</mat-chip-option>
+            </mat-chip-listbox>
           </div>
         </mat-toolbar>
   

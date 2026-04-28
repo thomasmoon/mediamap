@@ -13,25 +13,25 @@
         <!-- Topics-->
         <ng-container *ngIf="topics?.length">
           <h2>Topics</h2>
-          <mat-chip-list>
-              <mat-chip color="secondary" selected="true" *ngFor="let topic of topics;">{{topic}}</mat-chip>
-          </mat-chip-list>
+          <mat-chip-listbox>
+              <mat-chip-option color="secondary" selected="true" *ngFor="let topic of topics;">{{topic}}</mat-chip-option>
+          </mat-chip-listbox>
         </ng-container>
 
         <!-- Methods-->
         <ng-container *ngIf="methods?.length">
           <h2>Research Methods</h2>
-          <mat-chip-list>
-              <mat-chip color="secondary" selected="true" *ngFor="let method of methods;">{{method}}</mat-chip>
-          </mat-chip-list>
+          <mat-chip-listbox>
+              <mat-chip-option color="secondary" selected="true" *ngFor="let method of methods;">{{method}}</mat-chip-option>
+          </mat-chip-listbox>
         </ng-container>
 
         <!-- Keywords-->
         <ng-container *ngIf="keywords?.length">
           <h2>Keywords</h2>
-          <mat-chip-list>
-              <mat-chip color="secondary" *ngFor="let keyword of keywords;">{{keyword}}</mat-chip>
-          </mat-chip-list>
+          <mat-chip-listbox>
+              <mat-chip-option color="secondary" *ngFor="let keyword of keywords;">{{keyword}}</mat-chip-option>
+          </mat-chip-listbox>
         </ng-container>
       </div>
     </div>

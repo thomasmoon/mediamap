@@ -73,7 +73,7 @@ h2 {
   min-height: 100%;
 }
 
-.mat-dialog-container {
+.mat-mdc-dialog-container {
   iframe {
       width: 320px;
       height: 180px;
@@ -98,6 +98,7 @@ h2 {
   flex-grow: 2;
 }  
   
+/*TODO(mdc-migration): The following rule targets internal classes of tabs that may no longer apply for the MDC version.*/
 .mat-tab-label {
   flex-grow: 1;
   //height: 32px !important;
@@ -106,17 +107,20 @@ h2 {
 
 // Problems setting this from course styles because angular generated
 // element does not have indentifier used with encapsulated styles
-.locations-list .mat-list-item .mat-list-item-content {
+/*TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version.*/
+.locations-list .mat-mdc-list-item .mat-list-item-content {
   align-items: flex-start !important;
   line-height: 1.125rem !important;
   padding: 0.5rem 1rem !important;
 }
 
-.comments-list .mat-list-item .mat-list-item-content {
+/*TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version.*/
+.comments-list .mat-mdc-list-item .mat-list-item-content {
   align-items: flex-start !important;
   padding: 1rem 0 !important;
 }
 
-.mat-list-item.privacy .mat-list-item-content {
+/*TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version.*/
+.mat-mdc-list-item.privacy .mat-list-item-content {
   justify-content: flex-end;
 }

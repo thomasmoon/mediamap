@@ -43,7 +43,7 @@ $fd-dark-grey: #363636;
 .content-panel {
   flex-grow: 1;
   width: 220px;
-
+  /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
   mat-card-subtitle {
     align-items: center;
     display: flex;
@@ -57,12 +57,12 @@ $fd-dark-grey: #363636;
     }
   }
   
-  .mat-list-item {
+  .mat-mdc-list-item {
     align-items: flex-start !important;
     border-bottom: 1px solid #efefef;
     font-size: 0.875rem;
     height: auto !important;
-
+    /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version.*/
     .mat-list-text {
       display: flex;
       flex-direction: row;
@@ -189,6 +189,7 @@ $fd-dark-grey: #363636;
       overflow: hidden;
       white-space: nowrap;
       width: 2rem;
+      /* TODO(mdc-migration): The following rule targets internal classes of card that may no longer apply for the MDC version.*/
       mat-card-subtitle {
         align-items: center;
         color: #efefef;

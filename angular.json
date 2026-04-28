@@ -154,7 +154,6 @@
       }
     }
   },
-  "defaultProject": "media-map",
   "cli": {
     "analytics": false
   }

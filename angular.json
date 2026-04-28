@@ -73,10 +73,10 @@
           },
           "configurations": {
             "production": {
-              "browserTarget": "media-map:build:production"
+              "buildTarget": "media-map:build:production"
             },
             "development": {
-              "browserTarget": "media-map:build:development"
+              "buildTarget": "media-map:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -84,7 +84,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "media-map:build"
+            "buildTarget": "media-map:build"
           }
         },
         "test": {

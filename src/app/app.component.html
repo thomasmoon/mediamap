@@ -1,28 +1,32 @@
 <mat-sidenav-container>
-    
+
   <mat-sidenav-content>
-    
+
     <!-- Primary toolbar-->
     <mat-toolbar color="primary">
-        <a class="title" href="/" (click)=courseHeaderClick($event)>
-            <span class="logo"></span>
-            <span class="title-extra">Virtual Field Course - </span>
-            <span class="title-text">Forestry in the Tropics</span>
-        </a>
-        <span></span>
-        <span class="user">
-          <span class="photo"></span>
-          <span class="name">
-            <span></span>
-            <button mat-button class="primary" (click)="sidenav.toggle()" *ngIf="auth.user === null">
+      <a class="title" href="/" (click)=courseHeaderClick($event)>
+        <span class="logo"></span>
+        <span class="title-extra">Virtual Field Course - </span>
+        <span class="title-text">Forestry in the Tropics</span>
+      </a>
+      <span></span>
+      <span class="user">
+        <span class="photo"></span>
+        <span class="name">
+          <span></span>
+          @if (auth.user === null) {
+            <button mat-button class="primary" (click)="sidenav.toggle()">
               LOGIN
             </button>
+          }
 
-            <button mat-icon-button class="menu" aria-label="Menu" (click)="sidenav.toggle()" *ngIf="auth.user">
+          @if (auth.user) {
+            <button mat-icon-button class="menu" aria-label="Menu" (click)="sidenav.toggle()">
               <mat-icon>menu</mat-icon>
-            </button>            
-          </span>
+            </button>
+          }
         </span>
+      </span>
     </mat-toolbar>
 
     <!-- Active Page -->
@@ -35,81 +39,101 @@
     <!-- sidebar top -->
     <div class="sidenav-top">
 
-        <!-- User info -->
-        <mat-toolbar>
-          <div class="user-avatar">
+      <!-- User info -->
+      <mat-toolbar>
+        <div class="user-avatar">
+          @if (auth.user?.photoURL) {
             <div
               mat-card-avatar
               class="mat-user-avatar"
-              *ngIf="auth.user?.photoURL"
               [style.background-image]="'url(' + auth.user?.photoURL + ')'"
               >
             </div>
-            <mat-icon mat-card-avatar class="mat-user-avatar" *ngIf="!auth.user || auth.user.isAnonymous">account_circle</mat-icon>
-          </div>
-  
-          <div class="name">
-            {{ auth.user?.displayName || auth.user?.anonName || "Welcome, guest." }}
-            <mat-chip-listbox *ngIf="auth.user?.roles">
-              <mat-chip-option color="primary" selected="true" *ngIf="auth.user.roles.indexOf('admin') > -1">Admin</mat-chip-option>
-              <mat-chip-option color="secondary" selected="true" *ngIf="auth.user.roles.indexOf('expert') > -1">Expert</mat-chip-option>
+          }
+          @if (!auth.user || auth.user.isAnonymous) {
+            <mat-icon mat-card-avatar class="mat-user-avatar">account_circle</mat-icon>
+          }
+        </div>
+
+        <div class="name">
+          {{ auth.user?.displayName || auth.user?.anonName || "Welcome, guest." }}
+          @if (auth.user?.roles) {
+            <mat-chip-listbox>
+              @if (auth.user.roles.indexOf('admin') > -1) {
+                <mat-chip-option color="primary" selected="true">Admin</mat-chip-option>
+              }
+              @if (auth.user.roles.indexOf('expert') > -1) {
+                <mat-chip-option color="secondary" selected="true">Expert</mat-chip-option>
+              }
             </mat-chip-listbox>
-          </div>
-        </mat-toolbar>
-  
-        <!-- Login methods -->
-        <ng-container *ngIf="!auth.user">
-          <mat-list>
-            <mat-card-subtitle>LOGIN METHODS</mat-card-subtitle>
+          }
+        </div>
+      </mat-toolbar>
 
-            <mat-action-list>
-                <button mat-list-item (click)="auth.login(item.id)" *ngFor="let item of loginItems">
-                  <mat-icon mat-list-icon>{{item.icon}}</mat-icon>
-                  <h4 mat-line>{{item.text}}</h4>
-                  <p mat-line>{{item.info}}</p>
-                </button>
-              </mat-action-list>
-          </mat-list>
-      </ng-container>
-  
-        <!-- Menu -->
-        <mat-list *ngIf="auth.user">
-          <mat-list-item *ngFor="let item of menuItems">
-            <a mat-button routerLink="{{item.route}}" (click)="sidenav.close()">
-              <mat-icon>{{item.icon}}</mat-icon>
-              {{item.text}}
-            </a>
-          </mat-list-item>
-        </mat-list>
-
-        <!-- Admin menu -->
-        <mat-list *ngIf="auth.user && auth.user.isAdmin">
-          <mat-card-subtitle>ADMIN</mat-card-subtitle>
-          <mat-list-item *ngFor="let item of adminMenuItems">
-            <a mat-button routerLink="{{item.route}}" (click)="sidenav.close()">
-              <mat-icon>{{item.icon}}</mat-icon>
-              {{item.text}}
-            </a>
-          </mat-list-item>
-        </mat-list>
-
-      </div><!-- end of sidebar top -->
-  
-      <!-- sidebar bottom -->
-      <div class="sidebar-bottom">
+      <!-- Login methods -->
+      @if (!auth.user) {
         <mat-list>
-          <mat-list-item *ngIf="auth.user">
+          <mat-card-subtitle>LOGIN METHODS</mat-card-subtitle>
+          <mat-action-list>
+            @for (item of loginItems; track item) {
+              <button mat-list-item (click)="auth.login(item.id)">
+                <mat-icon mat-list-icon>{{item.icon}}</mat-icon>
+                <h4 mat-line>{{item.text}}</h4>
+                <p mat-line>{{item.info}}</p>
+              </button>
+            }
+          </mat-action-list>
+        </mat-list>
+      }
+
+      <!-- Menu -->
+      @if (auth.user) {
+        <mat-list>
+          @for (item of menuItems; track item) {
+            <mat-list-item>
+              <a mat-button routerLink="{{item.route}}" (click)="sidenav.close()">
+                <mat-icon>{{item.icon}}</mat-icon>
+                {{item.text}}
+              </a>
+            </mat-list-item>
+          }
+        </mat-list>
+      }
+
+      <!-- Admin menu -->
+      @if (auth.user && auth.user.isAdmin) {
+        <mat-list>
+          <mat-card-subtitle>ADMIN</mat-card-subtitle>
+          @for (item of adminMenuItems; track item) {
+            <mat-list-item>
+              <a mat-button routerLink="{{item.route}}" (click)="sidenav.close()">
+                <mat-icon>{{item.icon}}</mat-icon>
+                {{item.text}}
+              </a>
+            </mat-list-item>
+          }
+        </mat-list>
+      }
+
+    </div><!-- end of sidebar top -->
+
+    <!-- sidebar bottom -->
+    <div class="sidebar-bottom">
+      <mat-list>
+        @if (auth.user) {
+          <mat-list-item>
             <a mat-button class="logout" (click)="auth.signOut()">
-                <mat-icon>exit_to_app</mat-icon>
-                Logout
+              <mat-icon>exit_to_app</mat-icon>
+              Logout
             </a>
           </mat-list-item>
-          <mat-list-item class="privacy">
-            <a href="/privacy">Privacy</a>
-          </mat-list-item>
-        </mat-list>
+        }
+        <mat-list-item class="privacy">
+          <a href="/privacy">Privacy</a>
+        </mat-list-item>
+      </mat-list>
 
-      </div><!-- end of sidebar bottom -->
+    </div><!-- end of sidebar bottom -->
 
   </mat-sidenav>
 

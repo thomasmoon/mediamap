@@ -8,78 +8,96 @@
   <mat-card-content>
     <form class="comment-form">
 
-      <div class="comment-anonymous" *ngIf="!this.auth.user">
-        <mat-form-field class="comment-name">
-          <mat-label>Your Name</mat-label>
-          <input matInput [(ngModel)]="newComment.userName" [ngModelOptions]="{standalone: true}">
-        </mat-form-field>
-
-        <span class="divider">
-          or
-        </span>
-
-        <button mat-stroked-button (click)="login()">LOGIN</button>
-      </div>
+      @if (!this.auth.user) {
+        <div class="comment-anonymous">
+          <mat-form-field class="comment-name">
+            <mat-label>Your Name</mat-label>
+            <input matInput [(ngModel)]="newComment.userName" [ngModelOptions]="{standalone: true}">
+          </mat-form-field>
+          <span class="divider">
+            or
+          </span>
+          <button mat-stroked-button (click)="login()">LOGIN</button>
+        </div>
+      }
 
       <mat-form-field class="comment-type">
-          <mat-label>Type</mat-label>
-          <mat-select [(value)]="newComment.type">
-            <mat-option *ngFor="let type of types" [value]="type.value">
-            {{type.viewValue}}
+        <mat-label>Type</mat-label>
+        <mat-select [(value)]="newComment.type">
+          @for (type of types; track type) {
+            <mat-option [value]="type.value">
+              {{type.viewValue}}
             </mat-option>
-          </mat-select>
-        </mat-form-field>
-      
+          }
+        </mat-select>
+      </mat-form-field>
+
       <mat-form-field class="comment-text">
         <mat-label>{{types[newComment.type].viewValue}}</mat-label>
         <textarea matInput
-                cdkTextareaAutosize
-                #autosize="cdkTextareaAutosize"
-                cdkAutosizeMinRows="1"
-                cdkAutosizeMaxRows="10"
-                [(ngModel)]="newComment.text"
-                [ngModelOptions]="{standalone: true}"
-                ></textarea>
+          cdkTextareaAutosize
+          #autosize="cdkTextareaAutosize"
+          cdkAutosizeMinRows="1"
+          cdkAutosizeMaxRows="10"
+          [(ngModel)]="newComment.text"
+          [ngModelOptions]="{standalone: true}"
+        ></textarea>
       </mat-form-field>
     </form>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-button (click)="addComment()" *ngIf="!this.newComment.hasOwnProperty('id')">ADD COMMENT</button>
-    <button mat-button (click)="addComment()" *ngIf="this.newComment.hasOwnProperty('id')">UPDATE COMMENT</button>
-    <button mat-button (click)="cancelEdit()" *ngIf="this.newComment.hasOwnProperty('id')">CANCEL</button>
+    @if (!this.newComment.hasOwnProperty('id')) {
+      <button mat-button (click)="addComment()">ADD COMMENT</button>
+    }
+    @if (this.newComment.hasOwnProperty('id')) {
+      <button mat-button (click)="addComment()">UPDATE COMMENT</button>
+    }
+    @if (this.newComment.hasOwnProperty('id')) {
+      <button mat-button (click)="cancelEdit()">CANCEL</button>
+    }
   </mat-card-actions>
 </mat-card>
-                                            
+
 <!-- Comment List -->
 <mat-list class="comments-list">
-    <mat-list-item *ngFor="let user of commentsByUser | async">
-      <img matListAvatar *ngIf="user.userPhoto" src="{{user.userPhoto}}" alt="{{user.userName}}">
-      <mat-icon mat-list-avatar class="mat-user-avatar" *ngIf="!user.userPhoto">account_circle</mat-icon>
+  @for (user of commentsByUser | async; track user) {
+    <mat-list-item>
+      @if (user.userPhoto) {
+        <img matListAvatar src="{{user.userPhoto}}" alt="{{user.userName}}">
+      }
+      @if (!user.userPhoto) {
+        <mat-icon mat-list-avatar class="mat-user-avatar">account_circle</mat-icon>
+      }
       <h3 matLine class="comment-user">{{user.userName}}</h3>
-      <div class="comment" matLine *ngFor="let comment of user.comments">
-        <p class="row1">
-          <span class="date">{{ comment.created | date:'dd.MM.yy HH.mm' }} - </span>
-          <span class="type">{{comment.typeDisplay}}</span>
-        </p>
-        <p class="row2">
-          <span class="text">{{comment.text}}</span>
-        </p>
-        <div class="actions">
-          <button
-            *ngIf="auth.user && (comment.userId === auth.user.uid || auth.user.isAdmin)"
-            mat-icon-button
-            aria-label="Edit this comment"
-            (click)="editComment(comment)">
-              <mat-icon>edit</mat-icon>
-            </button>
-          <button
-            *ngIf="auth.user && (comment.userId === auth.user.uid || auth.user.isAdmin)"
-            mat-icon-button
-            aria-label="Delete this comment"
-            (click)="deleteComment(comment.id)">
-              <mat-icon>delete</mat-icon>
-            </button>
+      @for (comment of user.comments; track comment) {
+        <div class="comment" matLine>
+          <p class="row1">
+            <span class="date">{{ comment.created | date:'dd.MM.yy HH.mm' }} - </span>
+            <span class="type">{{comment.typeDisplay}}</span>
+          </p>
+          <p class="row2">
+            <span class="text">{{comment.text}}</span>
+          </p>
+          <div class="actions">
+            @if (auth.user && (comment.userId === auth.user.uid || auth.user.isAdmin)) {
+              <button
+                mat-icon-button
+                aria-label="Edit this comment"
+                (click)="editComment(comment)">
+                <mat-icon>edit</mat-icon>
+              </button>
+            }
+            @if (auth.user && (comment.userId === auth.user.uid || auth.user.isAdmin)) {
+              <button
+                mat-icon-button
+                aria-label="Delete this comment"
+                (click)="deleteComment(comment.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            }
+          </div>
         </div>
-      </div>
+      }
     </mat-list-item>
-  </mat-list>
+  }
+</mat-list>

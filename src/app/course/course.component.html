@@ -8,7 +8,7 @@
       <div class="filters left">
 
         <!-- Tools -->
-        <app-tools 
+        <app-tools
           [locations]=locations
           [topics]=topics
           [topicsNew]=topicsNew
@@ -18,12 +18,12 @@
           [topicIndex]="topicIndex"
           [methodIndex]="methodIndex"
           [locIndex]="locIndex"
-          ></app-tools>
+        ></app-tools>
       </div>
 
       <div class="content-panel">
 
-        <!-- nav level 2 
+        <!-- nav level 2
         <mat-tab-group class="locations">
 
           <!-- Videos
@@ -35,14 +35,15 @@
                   <mat-icon>videocam</mat-icon>
                   360° VIDEOS
                 </mat-card-subtitle>
-                <a mat-list-item
-                  [routerLink]="getRouterLink(i+1)"
-                  *ngFor="let video of videosFiltered; let i = index"
-                  routerLinkActive="active"
-                  >
-                  <span class="index">{{ i + 1}}.</span>
-                  <span class="name">{{ video.properties.name }}</span>
-                </a>
+                @for (video of videosFiltered; track video; let i = $index) {
+                  <a mat-list-item
+                    [routerLink]="getRouterLink(i+1)"
+                    routerLinkActive="active"
+                    >
+                    <span class="index">{{ i + 1}}.</span>
+                    <span class="name">{{ video.properties.name }}</span>
+                  </a>
+                }
               </mat-nav-list>
             <!--</ng-template>
           </mat-tab>
@@ -52,9 +53,9 @@
     </div>
     <div class="tab" (click)=courseSidenavService.toggle()>
       <mat-card-subtitle>
-          <mat-icon>menu_book</mat-icon>
-          COURSE CONTENT
-        </mat-card-subtitle>
+        <mat-icon>menu_book</mat-icon>
+        COURSE CONTENT
+      </mat-card-subtitle>
     </div>
   </mat-sidenav>
 
@@ -69,7 +70,7 @@
     <!-- Location Content -->
     <app-content [videoId]=videoId [content]=content [title]=title [topics]="currentTopics" [methods]="currentMethods" [keywords]="currentKeywords">
     </app-content>
-  
+
     <!-- Comments -->
     <app-comments></app-comments>
 

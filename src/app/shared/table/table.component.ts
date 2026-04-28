@@ -5,9 +5,10 @@ import { MatTableDataSource } from '@angular/material/table';
 import { tap } from 'rxjs/operators';
 
 @Component({
-  selector: 'app-table',
-  templateUrl: './table.component.html',
-  styleUrls: ['./table.component.scss']
+    selector: 'app-table',
+    templateUrl: './table.component.html',
+    styleUrls: ['./table.component.scss'],
+    standalone: false
 })
 export class TableComponent implements OnInit {
 

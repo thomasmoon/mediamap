@@ -5,9 +5,10 @@ import readXlsxFile from 'read-excel-file'
 import { GeoJson, IGeoJson } from 'src/app/services/map';
 
 @Component({
-  selector: 'app-videos',
-  templateUrl: './videos.component.html',
-  styleUrls: ['./videos.component.scss']
+    selector: 'app-videos',
+    templateUrl: './videos.component.html',
+    styleUrls: ['./videos.component.scss'],
+    standalone: false
 })
 export class VideosComponent implements OnInit {
 

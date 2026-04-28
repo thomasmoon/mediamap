@@ -9,9 +9,10 @@ import { CourseComponent } from '../../course/course.component';
 import { VideosService } from 'src/app/services/videos.service';
 
 @Component({
-  selector: 'app-map',
-  templateUrl: './map.component.html',
-  styleUrls: ['./map.component.scss']
+    selector: 'app-map',
+    templateUrl: './map.component.html',
+    styleUrls: ['./map.component.scss'],
+    standalone: false
 })
 export class MapComponent implements OnInit{
 

@@ -8,12 +8,13 @@ export interface DialogData {
  * @title Dialog Overview
  */
 @Component({
-  selector: 'dialog-block',
-  templateUrl: 'dialog-dialog.html',
-  styleUrls: ['dialog-dialog.scss'],
-  host: {
-    '(window:resize)': 'onResize($event)'
-  }
+    selector: 'dialog-block',
+    templateUrl: 'dialog-dialog.html',
+    styleUrls: ['dialog-dialog.scss'],
+    host: {
+        '(window:resize)': 'onResize($event)'
+    },
+    standalone: false
 })
 export class Dialog {
 

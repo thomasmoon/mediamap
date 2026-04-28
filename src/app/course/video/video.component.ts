@@ -2,9 +2,10 @@ import { Component, Input, OnInit, forwardRef, Inject, ViewChild } from '@angula
 import { CourseComponent } from '../../course/course.component';
 
 @Component({
-  selector: 'app-video',
-  templateUrl: './video.component.html',
-  styleUrls: ['./video.component.scss']
+    selector: 'app-video',
+    templateUrl: './video.component.html',
+    styleUrls: ['./video.component.scss'],
+    standalone: false
 })
 export class VideoComponent implements OnInit {
 

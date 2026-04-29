@@ -1,8 +1,9 @@
+@use 'sass:color';
 @import "@angular/material/prebuilt-themes/indigo-pink.css";
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons");
 
 $color_primary: #00A287;
-$color_active: lighten($color_primary, 50%);
+$color_active: color.adjust($color_primary, $lightness: -50%);
 
 body, html {
   background-color: #ffffff;

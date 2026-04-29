@@ -1,21 +1,11 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 
-import {
-  AngularFirestore,
-  AngularFirestoreDocument,
-  AngularFirestoreCollection,
-  DocumentChangeAction,
-  Action,
-  DocumentSnapshotDoesNotExist,
-  DocumentSnapshotExists,
-} from '@angular/fire/firestore';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { Observable } from 'rxjs';
 
-import { GeoJson } from './map';
 import * as mapboxgl from 'mapbox-gl';
-import { map } from 'rxjs/operators';
 import { VideosService } from './videos.service';
 
 @Injectable()
@@ -30,7 +20,7 @@ export class MapService {
     db: AngularFirestore,
     private videosService: VideosService
     ) {
-    mapboxgl.accessToken = environment.mapbox.accessToken;
+    mapboxgl.default.accessToken = environment.mapbox.accessToken
 
     this.videos = this.videosService.videos;
     this.videosService.loadAll();

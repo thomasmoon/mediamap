@@ -79,7 +79,7 @@ export class MapComponent implements OnInit{
       zoom: 15,
       pitch: this.defaultPitch,
       bearing: this.defaultBearing,
-      center: [this.lng, this.lat],
+      center: [this.lng, this.lat] as mapboxgl.LngLatLike,
       trackResize: true
     });
 
@@ -98,7 +98,7 @@ export class MapComponent implements OnInit{
     this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
 
     // Click Marker
-    this.map.on('click', 'locations', function (e: mapboxgl.event) {
+    this.map.on('click', 'locations', function (e: mapboxgl.MapTouchEvent) {
 
       this.flyTo(e.features[0]);
 
@@ -110,7 +110,7 @@ export class MapComponent implements OnInit{
     }.bind(this));
 
     /// Add realtime firebase data on map load
-    this.map.on('load', (event: mapboxgl.event) => {
+    this.map.on('load', () => {
 
       /// register source
       this.map.addSource('firebase', {
@@ -171,13 +171,11 @@ export class MapComponent implements OnInit{
         }
       });
     })
-
   }
-
 
   /// Helpers
   removeMarker(marker: mapboxgl.Marker) {
-    this.mapService.removeMarker(marker.$key)
+    this.mapService.removeMarker(marker.getElement.name)
   }
 
   setPitch(pitch: number) {
@@ -198,7 +196,7 @@ export class MapComponent implements OnInit{
 
     // Fly to location
     this.map.flyTo({
-      center: data.geometry.coordinates,
+      center: data.geometry.coordinates as mapboxgl.LngLatLike,
       zoom: zoom
       /*,
       curve: 1, // change the speed at which it zooms out

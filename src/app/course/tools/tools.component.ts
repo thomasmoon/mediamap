@@ -1,5 +1,4 @@
-import { Component, Input, Inject, forwardRef, OnInit } from '@angular/core';
-import * as $ from 'jquery';
+import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
     selector: 'app-tools',
@@ -37,23 +36,19 @@ export class ToolsComponent implements OnInit {
   }
 
   ngAfterContentInit() {
-
     // Run this after lists are loaded
-    let locList = $('.mat-tab-body-content'),
-    locSelected = locList.find('a.active');
+    const locList = document.querySelector('.mat-tab-body-content') as HTMLElement;
+    const locSelected = locList?.querySelector('a.active') as HTMLElement;
 
     // if we have a location list and it has not been init'd
-    if (!this.listInitiated && locList.length > 0 && locSelected.length > 0) {
-
-      let activeItemRelativeTop = locSelected.offset().top - locList.offset().top;
+    if (!this.listInitiated && locList && locSelected) {
+      let activeItemRelativeTop = locSelected.offsetTop - locList.offsetTop;
 
       // if the active item is off the viewport - one row
-      locList.scrollTop(locList.scrollTop() + activeItemRelativeTop);
+      locList.scrollTop += activeItemRelativeTop;
 
       // Only do this once
       this.listInitiated = true;
-
-      // console.log('List initiated');
     }
   }
 

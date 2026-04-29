@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { auth } from 'firebase/app';
-import { User } from 'firebase';
-import { AngularFireAuth } from '@angular/fire/auth';
-import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/firestore';
+import auth from 'firebase/compat/app';
+import { User } from '@angular/fire/auth'
+import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore, AngularFirestoreDocument } from '@angular/fire/compat/firestore';
 
-import { Observable, of, BehaviorSubject } from 'rxjs';
+import { Observable } from 'rxjs';
 
 export interface MoocUser extends User {
   uid: string;
@@ -31,20 +31,10 @@ export class AuthService {
     private afs: AngularFirestore,
     private router: Router
   ) {
-
-    //console.log('Init auth service');
-
     // This asyc subscription is used by auth guards
     this.user$ = Observable.create(observer => {
-
-      //console.log('started new async process for user');
-
       // Get auth data, then firestore user document or null
       this.afAuth.authState.subscribe(user => {
-
-        //console.log('User returned');
-        //console.log(user);
-
         if (user) {
           this.user = user;
           localStorage.setItem('user', JSON.stringify(this.user));
@@ -83,16 +73,16 @@ export class AuthService {
         alert('Sorry, this still needs to be figured out');
         break;
       case 'facebook':
-        provider = new auth.FacebookAuthProvider;
+        provider = new auth.auth.FacebookAuthProvider;
         break;
       case 'google':
-        provider = new auth.GoogleAuthProvider;
+        provider = new auth.auth.GoogleAuthProvider;
         break;
       case 'twitter':
-        provider = new auth.TwitterAuthProvider;
+        provider = new auth.auth.TwitterAuthProvider;
         break;
       case 'github':
-        provider = new auth.GithubAuthProvider;
+        provider = new auth.auth.GithubAuthProvider;
         break;
     }
 
@@ -111,9 +101,6 @@ export class AuthService {
   }
 
   public loginReturn(result: any) {
-
-    // console.log('Login return');
-
     if (result.user === null) {
       return result;
     }
@@ -139,21 +126,13 @@ export class AuthService {
   }
 
   public loginAnonReturn(result: any) {
-
-    //console.log('Anon login return');
-    //console.log(result);
-
     if (result.user === null) {
       return result;
     }
-    
     return this.updateUserData(result.user);
   }
 
   public redirectResult() {
-
-    // console.log('check for redirect');
-
     return this.afAuth.getRedirectResult()
     .then(result => {
       return this.loginReturn(result);
@@ -184,12 +163,6 @@ export class AuthService {
   }
 
   private oAuthLogin(provider: any) {
-    
-    // Prepare for redirect
-    /*
-    this.afAuth.auth.getRedirectResult()
-      .then(this.loginReturn);*/
-
     return this.afAuth.signInWithRedirect(provider)
       // if using signInWithPopup: .then(this.loginReturn);
       //return this.afAuth.auth.signInWithPopup(provider)
@@ -198,11 +171,7 @@ export class AuthService {
 
   // Helpers //
   private updateUserData(user: any) {
-
-    //console.log('Update user data');
-    //console.log(user);
-    
-    const userRef: AngularFirestoreDocument<User> = this.afs.doc(`users/${user.uid}`);
+    const userRef: AngularFirestoreDocument<MoocUser> = this.afs.doc(`users/${user.uid}`);
 
     const data: any = {
       uid: user.uid,
@@ -218,13 +187,8 @@ export class AuthService {
       data.displayName = localStorage.getItem('displayName');
       data.anonName = data.displayName;
     }
-
-    //console.log('Data to update:', data);
-
     return userRef.set(data, { merge: true })
       .then(() => {
-        // console.log('User updated');
-
         /* Check for special roles set in db */
         return userRef.get().toPromise()
           .then((snap) => {
@@ -235,8 +199,6 @@ export class AuthService {
             if (this.user.isAnonymous) {
               this.user.anonName = snap.data().anonName;
             }
-
-            //console.log("User roles updated");
             return this.user;
         });
         

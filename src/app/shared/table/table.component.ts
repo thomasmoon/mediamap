@@ -27,9 +27,6 @@ export class TableComponent implements OnInit {
   @ViewChild(MatPaginator) paginator: MatPaginator;
 
   sortingDataAccessor(item, property) {
-
-    console.log(item, property);
-
     if (property.includes('.')) {
       return property.split('.')
         .reduce((object, key) => object[key], item);

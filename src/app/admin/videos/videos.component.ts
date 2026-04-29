@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { VideosService, Video } from 'src/app/services/videos.service';
+import { VideosService } from 'src/app/services/videos.service';
 
-import readXlsxFile from 'read-excel-file'
-import { GeoJson, IGeoJson } from 'src/app/services/map';
+import readXlsxFile from 'read-excel-file/browser'
+import { IGeoJson } from 'src/app/services/map';
 
 @Component({
     selector: 'app-videos',

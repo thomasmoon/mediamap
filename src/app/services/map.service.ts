@@ -1,11 +1,9 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
 
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 import { Observable } from 'rxjs';
 
-import * as mapboxgl from 'mapbox-gl';
 import { VideosService } from './videos.service';
 
 @Injectable()
@@ -19,8 +17,7 @@ export class MapService {
   constructor(
     db: AngularFirestore,
     private videosService: VideosService
-    ) {
-    mapboxgl.default.accessToken = environment.mapbox.accessToken
+  ) {
 
     this.videos = this.videosService.videos;
     this.videosService.loadAll();
@@ -69,5 +66,4 @@ export class MapService {
   removeMarker($key: string) {
     return this.locations;
   }
-
 }

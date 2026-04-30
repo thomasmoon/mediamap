@@ -1,28 +1,26 @@
-import { Component, OnInit, forwardRef, Inject } from '@angular/core';
-import * as mapboxgl from 'mapbox-gl';
+import { Component, OnDestroy, OnInit, forwardRef, Inject, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { PLATFORM_ID } from '@angular/core';
 import { MapService } from '../../services/map.service';
 import { GeoJson, FeatureCollection } from '../../services/map';
-
-// Mapbox
 import { WorldTypeControl } from './world-type-control/world-type-control';
 import { CourseComponent } from '../../course/course.component';
 import { VideosService } from 'src/app/services/videos.service';
+import { environment } from '../../../environments/environment';
 
 @Component({
     selector: 'app-map',
-    templateUrl: './map.component.html',
+    standalone: false,
     styleUrls: ['./map.component.scss'],
-    standalone: false
+    templateUrl: './map.component.html'
 })
-export class MapComponent implements OnInit{
-
-  // Refs
+export class MapComponent implements OnInit, OnDestroy {
+  private platformId = inject(PLATFORM_ID);
   course: any;
-
   updateViewOnce: boolean = false;
 
   // Default settings for Map
-  map: mapboxgl.Map;
+  map: any;
   style = 'mapbox://styles/mapbox/outdoors-v10';
   lat = 19.888900;
   lng = 102.133700;
@@ -40,7 +38,6 @@ export class MapComponent implements OnInit{
   links: any;
 
   constructor(
-
     @Inject(forwardRef(() => CourseComponent)) course,
     // Map service
     private mapService: MapService,
@@ -49,128 +46,112 @@ export class MapComponent implements OnInit{
     this.course = course;
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     this.markers = this.videosService.videos;
-
     let filters: any = {};
-
     if (this.course.topicIndex !== null) {
       filters.topics = this.course.topicIndex;
     } else if (this.course.methodIndex !== null) {
       filters.methods = this.course.methodIndex;
     }
-      
     this.videosService.loadAll(filters);
   }
 
-  ngAfterViewInit() {
-    this.initializeMap();
-  }
+  async ngAfterViewInit() {
+    if (isPlatformBrowser(this.platformId)) { // SSR check to ensure this runs in the browser
+      const mapboxgl = (await import(/* @vite-ignore */ 'mapbox-gl')).default // dynamically import mapbox-gl
 
-  private initializeMap() {
+      mapboxgl.accessToken = environment.mapbox.accessToken
+      this.map = new mapboxgl.Map({
+        container: 'map',
+        style: this.style,
+        zoom: 15,
+        pitch: this.defaultPitch,
+        bearing: this.defaultBearing,
+        center: [this.lng, this.lat] as mapboxgl.LngLatLike,
+        trackResize: true
+      });
 
-    this.buildMap();
-  }
+      // Disable scroll wheel
+      if (this.map.scrollZoom) {
+        this.map.scrollZoom.disable();
+      }
 
-  buildMap() {
-    this.map = new mapboxgl.Map({
-      container: 'map',
-      style: this.style,
-      zoom: 15,
-      pitch: this.defaultPitch,
-      bearing: this.defaultBearing,
-      center: [this.lng, this.lat] as mapboxgl.LngLatLike,
-      trackResize: true
-    });
+      // Fullscreen
+      this.map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
 
-    // Disable scroll wheel
-    if (this.map.scrollZoom) {
-      this.map.scrollZoom.disable();
+      // World Type control (3D/2D)
+      this.map.addControl(new WorldTypeControl(), 'top-right');
+
+      // Navigation
+      this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+      // Click Marker
+      this.map.on('click', 'locations', function (e: mapboxgl.MapTouchEvent) {
+
+        this.flyTo(e.features[0]);
+
+        this.routeEventInitiated = false;
+        this.listInitiated = false;
+        
+        this.course.router.navigate(['/videoId', e.features[0].properties.videoId])
+
+      }.bind(this));
+
+      /// Add realtime firebase data on map load
+      this.map.on('load', () => {
+
+        /// register source
+        this.map.addSource('firebase', {
+          type: 'geojson',
+          data: {
+            type: 'FeatureCollection',
+            features: []
+          }
+        });
+
+        /// get source
+        this.source = this.map.getSource('firebase')
+
+        /// subscribe to realtime database and set data source
+        this.markers.subscribe(markers => {
+          // If we have markers fire up the course and map locations, once only
+          if (markers.length && !this.updateViewOnce) {
+            this.updateViewOnce = true;
+            this.course.videos = markers;
+            this.course.updateView();
+
+            let data = new FeatureCollection(markers)
+            this.source.setData(data);
+          }
+        });
+
+        /// create map layers with realtime data
+        this.map.addLayer({
+          id: 'locations',
+          source: 'firebase',
+          type: 'symbol',
+          layout: {
+            'icon-image': 'cinema-15',
+            'icon-size': 1,
+            'text-offset': [0, 1.5],
+            'text-field': '{shortname}',
+            'text-optional': true
+          },
+          paint: {
+            'text-color': '#121220',
+            'text-halo-color': '#fff',
+            'text-halo-width': 2
+          }
+        });
+      })
     }
+  }
 
-    // Fullscreen
-    this.map.addControl(new mapboxgl.FullscreenControl(), 'top-right');
-
-    // World Type control (3D/2D)
-    this.map.addControl(new WorldTypeControl(), 'top-right');
-
-    // Navigation
-    this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
-
-    // Click Marker
-    this.map.on('click', 'locations', function (e: mapboxgl.MapTouchEvent) {
-
-      this.flyTo(e.features[0]);
-
-      this.routeEventInitiated = false;
-      this.listInitiated = false;
-      
-      this.course.router.navigate(['/videoId', e.features[0].properties.videoId])
-
-    }.bind(this));
-
-    /// Add realtime firebase data on map load
-    this.map.on('load', () => {
-
-      /// register source
-      this.map.addSource('firebase', {
-         type: 'geojson',
-         data: {
-           type: 'FeatureCollection',
-           features: []
-         }
-      });
-
-      /// get source
-      this.source = this.map.getSource('firebase')
-
-      /// subscribe to realtime database and set data source
-      this.markers.subscribe(markers => {
-
-        //console.log('Subscribe to markers');
-        //console.log(markers);
-
-        // If we have markers fire up the course and map locations, once only
-        if (markers.length && !this.updateViewOnce) {
-          this.updateViewOnce = true;
-          this.course.videos = markers;
-          this.course.updateView();
-
-          let data = new FeatureCollection(markers)
-          this.source.setData(data);
-        }
-      });
-
-      /*
-      /// subscribe to realtime database and set data source
-      this.tasksDynamic.subscribe(tasksDynamic => {
-
-        this.tasks = tasksDynamic;
-
-        let data = new FeatureCollection(tasksDynamic)
-        this.source.setData(data)
-      });*/
-
-
-      /// create map layers with realtime data
-      this.map.addLayer({
-        id: 'locations',
-        source: 'firebase',
-        type: 'symbol',
-        layout: {
-          'icon-image': 'cinema-15',
-          'icon-size': 1,
-          'text-offset': [0, 1.5],
-          'text-field': '{shortname}',
-          'text-optional': true
-        },
-        paint: {
-          'text-color': '#121220',
-          'text-halo-color': '#fff',
-          'text-halo-width': 2
-        }
-      });
-    })
+  ngOnDestroy(): void {
+    if (this.map) {
+      this.map.remove();
+    }
   }
 
   /// Helpers

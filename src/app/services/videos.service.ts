@@ -22,7 +22,8 @@ export interface Video {
   author?: string,
   geometry?: {},
   zoom?: number,
-  bearing?: number
+  bearing?: number,
+  pitch?: number
 }
 
 @Injectable({

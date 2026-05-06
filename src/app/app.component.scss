@@ -98,8 +98,7 @@ mat-sidenav-container {
     padding-bottom: 1rem;
 
     .privacy {
-      /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
-      .mat-list-item-content {
+      .mat-list-item__content {
         justify-content: flex-end;
       }
     }
@@ -117,10 +116,10 @@ mat-sidenav-container {
 
     .mat-mdc-list-item {
       margin-bottom: 1px;
-      /* TODO(mdc-migration): The following rule targets internal classes of list that may no longer apply for the MDC version. */
-      .mat-list-item-content {
-        padding-left: 0 !important;
-        padding-right: 0 !important;
+
+      .mat-list-item__content {
+        padding-left: 0;
+        padding-right: 0;
       }
   
       .mat-mdc-button {

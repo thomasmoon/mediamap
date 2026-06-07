@@ -104,14 +104,8 @@ export class CourseComponent implements OnInit {
   }
 
   updateView() {
-
-    //console.log("update view");
-
      // Actions based on active route
      this.locIndexSub = this.route.params.subscribe(params => {
-
-      //console.log("Route subscription");
-      //console.log(params);
 
       // This is just getting crazy, so many event leaks
       if (this.videos && this.videos.length) {
@@ -197,12 +191,18 @@ export class CourseComponent implements OnInit {
           this.currentKeywords = this.getLocationPropertyAsArray('keywords');
 
           let zoom = 16,
-              // Default bearing is 0 in 2D mode
-              bearing = window['map-world-mode'] !== 1 && this.map ? this.map.defaultBearing : 0;
+          // Default bearing is 0 in 2D mode
+          bearing = window['map-world-mode'] !== 1 && this.map ? this.map.defaultBearing : 0,
+          pitch = this.map.defaultPitch;
 
           // custom bearing if in 3D map mode
           if (this.videosFiltered[this.locIndex].properties.hasOwnProperty('bearing') && window['map-world-mode'] !== 1) {
             bearing = this.videosFiltered[this.locIndex].properties.bearing;
+          }
+
+          // custom pitch if available
+          if (this.videosFiltered[this.locIndex].properties.hasOwnProperty('pitch') && window['map-world-mode'] !== 1) {
+            pitch = this.videosFiltered[this.locIndex].properties.pitch;
           }
 
           // custom zoom
@@ -210,8 +210,21 @@ export class CourseComponent implements OnInit {
             zoom = this.videosFiltered[this.locIndex].properties.zoom;
           }
 
+          // Set map bearing and pitch
           this.map.currentBearing = bearing;
+          this.map.currentPitch = pitch;
           this.map.map.setBearing(bearing);
+          this.map.map.setPitch(pitch);
+
+          // Set the initial bearing and pitch on the video component
+          if (this.video) {
+            if (bearing !== null && bearing !== undefined) {
+              this.video.YTbearing = bearing;
+            }
+            if (pitch !== null && pitch !== undefined) {
+              this.video.YTpitch = pitch;
+            }
+          }
 
           // Fly to the location with given zoom
           this.map.flyTo(this.videosFiltered[this.locIndex], zoom);
@@ -228,9 +241,6 @@ export class CourseComponent implements OnInit {
   }
 
   nextLocation() {
-
-    //console.log('next location');
-
     // If we have additional locations then go to the next one
     if (this.locIndex < this.videosFiltered.length - 1) {
       this.locIndex++;

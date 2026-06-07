@@ -25,7 +25,7 @@ export class MapComponent implements OnInit, OnDestroy {
   lat = 19.888900;
   lng = 102.133700;
   defaultBearing = 190;
-  currentBearing: number;
+  currentBearing: number = this.defaultBearing;
   defaultPitch = 60;
   currentPitch = this.defaultPitch;
   hidden: boolean = false;
@@ -85,6 +85,29 @@ export class MapComponent implements OnInit, OnDestroy {
 
       // Navigation
       this.map.addControl(new mapboxgl.NavigationControl(), 'top-right');
+
+      // Track bearing and pitch changes from user interaction
+      this.map.on('rotate', () => {
+        const newBearing = this.map.getBearing();
+        // Only update if change is significant (more than 1 degree)
+        if (Math.abs(newBearing - this.currentBearing) > 1) {
+          this.currentBearing = newBearing;
+          if (this.course.video) {
+            this.course.video.setYTbearing(this.currentBearing);
+          }
+        }
+      });
+
+      this.map.on('pitch', () => {
+        const newPitch = this.map.getPitch();
+        // Only update if change is significant (more than 1 degree)
+        if (Math.abs(newPitch - this.currentPitch) > 1) {
+          this.currentPitch = newPitch;
+          if (this.course.video) {
+            this.course.video.setYTpitch(this.currentPitch);
+          }
+        }
+      });
 
       // Click Marker
       this.map.on('click', 'locations', function (e: mapboxgl.MapTouchEvent) {
@@ -160,11 +183,20 @@ export class MapComponent implements OnInit, OnDestroy {
   }
 
   setPitch(pitch: number) {
-    this.map.setPitch(this.currentPitch + pitch);
+    // Clamp pitch to valid range [-85, 85]
+    const newPitch = Math.max(-85, Math.min(85, pitch));
+    this.currentPitch = newPitch;
+    this.map.setPitch(newPitch);
   }
 
   setBearing(bearing: number) {
-    this.map.setBearing((this.currentBearing - bearing) % 360);
+    // Normalize bearing to [0, 360)
+    let newBearing = bearing % 360;
+    if (newBearing < 0) {
+      newBearing += 360;
+    }
+    this.currentBearing = newBearing;
+    this.map.setBearing(newBearing);
   }
 
   flyTo(data: GeoJson, zoom = 15) {

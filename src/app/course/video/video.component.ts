@@ -30,7 +30,10 @@ export class VideoComponent implements OnInit {
       'onStateChange': this.onPlayerStateChange.bind(this)
     },
     playerVars: {
-      rel: 0
+      rel: 0,
+      fs: 1,          // Enable fullscreen button (required for 360° controls)
+      modestbranding: 0,  // Show YouTube branding
+      controls: 1      // Show player controls
     }
   };
   YTbearingRoutineInitiated = false;
@@ -38,9 +41,7 @@ export class VideoComponent implements OnInit {
   YTpitch: number;
 
   constructor(
-
     @Inject(forwardRef(() => CourseComponent)) course
-
   ) { 
     this.course = course;
   }
@@ -49,9 +50,6 @@ export class VideoComponent implements OnInit {
   }
 
   ngAfterViewInit() {
-
-    //console.log('Video component after view init');
-    
     this.loadYoutubeApi();
   }
 
@@ -83,9 +81,21 @@ export class VideoComponent implements OnInit {
 
   // API will call this function when the video player is ready.
   onPlayerReady(event) {
-
-    //console.log('onPlayerReady');
-    //console.log(event);
+    // Enable 360° video interactive mode
+    // Note: As of 2026, YouTube's embedded player has limitations on 360° video interaction
+    // via mouse drag. The setSphericalProperties API allows programmatic control,
+    // but native drag interaction may be limited or require fullscreen mode.
+    // Setting enableOrientationSensor to false allows API-based control on mobile.
+    if (event.target.setSphericalProperties) {
+      try {
+        event.target.setSphericalProperties({
+          enableOrientationSensor: false
+        });
+      } catch (e) {
+        console.log("Could not set initial spherical properties:", e);
+      }
+    }
+    
     if (this.course.autoplay) {
       event.target.playVideo();
     }
@@ -106,44 +116,27 @@ export class VideoComponent implements OnInit {
   }
 
   playVideo(videoId: any) {
-
-    //console.log('playVideo');
-
     if (videoId !== null) {
       this.YTparams.videoId = videoId;
     }
 
      // if the Youtube API is loaded
     if (this.YTloaded) {
-
-      //console.log('YouTube API is loaded');
-      //console.log(this);
-
       // If the player exists load new video
       if (this.YTplayer) {
-
-        //console.log('YouTube player exists');
-
         if (this.course.autoplay) {
-
           // Only when autoplay is toggled on will we not have an id
           if (videoId === null) {
-
             this.YTplayer.playVideo();
-
           } else {
-
             // If the load video function exists
             if (this.YTplayer.loadVideoById) {
               this.YTplayer.loadVideoById(this.YTparams.videoId);
             } else {
               console.log("this.YTplayer.loadVideoById does not exist");
             }
-
           }
-
         } else {
-
           // cue video
           if (this.YTplayer.cueVideoById) {
             this.YTplayer.cueVideoById(this.YTparams.videoId);
@@ -153,23 +146,16 @@ export class VideoComponent implements OnInit {
         }
 
       } else {
-        //console.log('Create Youtube player');
-
         // Create new player
         this.YTplayer = new (<any>window).YT.Player('player', this.YTparams);
       }
 
       // When video is playing begin the routine to get bearing
       if (!this.YTbearingRoutineInitiated) {
-        //console.log('Get video bearing');
         this.getVideoBearing();
       }
 
     } else {
-
-      //console.log('Load Youtube api');
-      //console.log(this);
-
       this.loadYoutubeApi();
 
       /* otherwise retry when it is*/
@@ -181,6 +167,38 @@ export class VideoComponent implements OnInit {
 
   stopVideo() {
     this.YTplayer.stopVideo();
+  }
+
+  setYTbearing(bearing: number) {
+    // Update video bearing based on map bearing (absolute value, not delta)
+    if (typeof this.YTplayer !== 'undefined' && this.YTplayer && this.YTplayer.setSphericalProperties) {
+      this.YTbearing = bearing;
+      try {
+        this.YTplayer.setSphericalProperties({
+          yaw: bearing,
+          pitch: this.YTpitch !== undefined ? this.YTpitch : 0,
+          roll: 0
+        });
+      } catch (e) {
+        console.log("Could not set spherical properties:", e);
+      }
+    }
+  }
+
+  setYTpitch(pitch: number) {
+    // Update video pitch based on map pitch (absolute value, not delta)
+    if (typeof this.YTplayer !== 'undefined' && this.YTplayer && this.YTplayer.setSphericalProperties) {
+      this.YTpitch = pitch;
+      try {
+        this.YTplayer.setSphericalProperties({
+          yaw: this.YTbearing !== undefined ? this.YTbearing : 0,
+          pitch: pitch,
+          roll: 0
+        });
+      } catch (e) {
+        console.log("Could not set spherical properties:", e);
+      }
+    }
   }
 
   getVideoBearing () {
